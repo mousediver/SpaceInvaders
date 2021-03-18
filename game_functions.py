@@ -114,7 +114,7 @@ def update_bullets(si_settings, screen, ship, aliens, bullets, stats, scoreboard
         si_settings.increase_difficulty()
         create_fleet(si_settings, screen, ship, aliens)
 
-        #increase level
+        # increase level
         stats.level += 1
         scoreboard.prep_level()
 
@@ -127,7 +127,7 @@ def check_bullet_collisions(aliens, bullets, stats, si_settings, scoreboard):
         for aliens in collisions.values():
             stats.score += si_settings.alien_points * len(aliens)
             scoreboard.prep_score()
-        check_high_score(stats, scoreboard)
+            check_high_score(stats, scoreboard)
 
 
 def check_alien_bullet_collisions(ship, alien_bullets):
@@ -218,6 +218,7 @@ def ship_hit(si_settings, stats, screen, ship, aliens, bullets, alien_bullets, s
 
     else:
         stats.game_active = False
+        check_lowest_high_score(stats)
         set_mouse_visibility(si_settings)
 
 
@@ -331,6 +332,12 @@ def check_aliens_bottom(si_settings, stats, screen, ship, aliens, bullets, alien
 
 def check_high_score(stats, scoreboard):
     """"check if score is new high score"""
-    if stats.score > stats.high_score:
-        stats.high_score = stats.score
+    if stats.score > stats.highest_score:
+        stats.highest_score = stats.score
         scoreboard.prep_high_score()
+
+
+def check_lowest_high_score(stats):
+    """"check if score is higher than lowest high score"""
+    if stats.score > stats.lowest_high_score:
+        stats.update_highscores()

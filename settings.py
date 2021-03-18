@@ -41,7 +41,7 @@ class Settings:
 
         # alien bullet settings
         self.alien_bullet_speed_factor = -3
-        self.alien_bullet_width = 3
+        self.alien_bullet_width = 1200
         self.alien_bullet_height = 15
         self.alien_bullet_color = (0, 255, 0)
         self.alien_bullets_allowed = 5

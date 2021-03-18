@@ -36,7 +36,7 @@ class Scoreboard:
 
     def prep_high_score(self):
         """"turn score into image"""
-        rounded_score = int(round(self.stats.high_score, -1))
+        rounded_score = int(round(self.stats.highest_score, -1))
         score_str = "{:,}".format(rounded_score)
         self.high_score_image = self.font.render(score_str, True, self.text_color, self.si_settings.bg_color)
 

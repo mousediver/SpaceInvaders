@@ -1,3 +1,7 @@
+import json
+from operator import itemgetter
+
+
 class GameStats:
     """"track stats for the game"""
 
@@ -7,7 +11,9 @@ class GameStats:
         self.reset_stats()
         # start the game in inactive state
         self.game_active = False
-        self.high_score = 0
+        self.highest_score = 0
+        self.lowest_high_score = 0
+        self.high_scores = []
 
     def reset_stats(self):
         """"initialize stats that can change during the game"""
@@ -15,4 +21,38 @@ class GameStats:
         self.score = 0
         self.level = 1
 
-# TODO: save highscores to file with names
+    def load_highscore(self):
+        """"load the highscores into the game"""
+        try:
+            with open('highscores.txt', 'r') as f:
+                highscores = json.load(f)
+
+        except FileNotFoundError:
+            # set default values if file is not found
+            highscores = [
+                ('#####', 0),
+                ('#####', 0),
+                ('#####', 0),
+                ('#####', 0),
+                ('#####', 0)
+                ]
+
+        self.highest_score = highscores[0][1]
+        self.lowest_high_score = highscores[4][1]
+        self.high_scores = highscores
+
+    def update_highscores(self):
+        """"update the highscore file"""
+        player_name = input("What is your name? ")
+        player_score = self.score
+        high_scores = self.high_scores
+
+        high_scores.append((player_name, player_score))
+        high_scores = sorted(high_scores, key=itemgetter(1), reverse=True)[:5]
+
+        with open('highscores.txt', 'w') as f:
+            json.dump(high_scores, f)
+
+
+
+# TODO: make highscore input in GUI
