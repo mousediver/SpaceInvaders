@@ -35,8 +35,12 @@ def run_game():
     gf.star_field(si_settings, stars)
     gf.create_fleet(si_settings, screen, ship, aliens)
 
-    #load high scores
+    # load high scores
     stats.load_highscore()
+
+    gf.update_screen(
+        si_settings, screen, ship, aliens, bullets, stars, alien_bullets, play_button, stats, scoreboard
+    )
 
     # Start mainloop for the game.
     while True:
@@ -53,7 +57,7 @@ def run_game():
             gf.update_alien_bullets(alien_bullets, si_settings, ship, stats, screen, aliens, bullets, scoreboard)
         gf.update_screen(
             si_settings, screen, ship, aliens, bullets, stars, alien_bullets, play_button, stats, scoreboard
-        )
+            )
         clock.tick(si_settings.max_frames_sec)
 
 
@@ -61,4 +65,3 @@ run_game()
 
 # TODO: make bunkers
 # TODO: add sound
-# TODO: fix initial 4 ship bug

@@ -9,7 +9,7 @@ from alien_bullet import AlienBullet
 
 def check_keydown_events(event, si_settings, screen, ship, bullets, stats, scoreboard):
     """"respond to key presses."""
-    if event.key == pygame.K_q:
+    if event.key == pygame.K_q or event.key == pygame.K_ESCAPE:
         sys.exit()
     if event.key == pygame.K_RETURN and stats.game_active is False:
         press_play(si_settings, stats, scoreboard)
@@ -218,6 +218,14 @@ def ship_hit(si_settings, stats, screen, ship, aliens, bullets, alien_bullets, s
 
     else:
         stats.game_active = False
+
+        aliens.empty()
+        bullets.empty()
+        alien_bullets.empty()
+
+        create_fleet(si_settings, screen, ship, aliens)
+        ship.center_ship()
+
         check_lowest_high_score(stats)
         set_mouse_visibility(si_settings)
 
@@ -339,5 +347,7 @@ def check_high_score(stats, scoreboard):
 
 def check_lowest_high_score(stats):
     """"check if score is higher than lowest high score"""
-    if stats.score > stats.lowest_high_score:
+    if stats.lowest_high_score == 0:
+        stats.update_highscores()
+    elif stats.score > stats.lowest_high_score:
         stats.update_highscores()
