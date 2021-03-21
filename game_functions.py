@@ -165,7 +165,9 @@ def get_number_rows(si_settings, alien_height, ship_height):
         number_rows = 5
         return number_rows
     else:
-        available_space_y = (si_settings.fleet_max_height - (3 * alien_height) - ship_height)
+        available_space_y = (
+                si_settings.fleet_max_height - (3 * alien_height) - ship_height - si_settings.scoreboard_height
+                )
         number_rows = int(available_space_y / (2 * alien_height))
         return number_rows
 
@@ -176,7 +178,7 @@ def create_alien(si_settings, screen, aliens, alien_number, row_number):
     alien_width = alien.rect.width
     alien_x = alien_width + 2 * alien_width * alien_number
     alien.rect.x = alien_x
-    alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
+    alien.rect.y = (alien.rect.height + 2 * alien.rect.height * row_number) + si_settings.scoreboard_height
     aliens.add(alien)
 
 

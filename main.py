@@ -26,6 +26,8 @@ def run_game():
 
     # Make a ship, bullets and aliens
     ship = Ship(si_settings, screen)
+    ship.center_ship()
+    ship.update()
     bullets = Group()
     aliens = Group()
     alien_bullets = Group()
@@ -37,10 +39,7 @@ def run_game():
 
     # load high scores
     stats.load_highscore()
-
-    gf.update_screen(
-        si_settings, screen, ship, aliens, bullets, stars, alien_bullets, play_button, stats, scoreboard
-    )
+    scoreboard.prep_high_score()
 
     # Start mainloop for the game.
     while True:

@@ -14,6 +14,8 @@ class Settings:
         self.bg_color = (0, 0, 0)
         self.mouse_visible = True
         self.max_frames_sec = 120
+        self.scoreboard_bg = (105, 105, 105)
+        self.scoreboard_height = 64
 
         # star settings
         self.star_color = (255, 255, 255)
