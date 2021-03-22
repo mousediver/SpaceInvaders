@@ -7,11 +7,14 @@ import random
 from alien_bullet import AlienBullet
 
 
-def check_keydown_events(event, si_settings, screen, ship, bullets, stats, scoreboard):
+def check_keydown_events(event, si_settings, screen, ship, aliens, bullets, alien_bullets,  stats, scoreboard):
     """"respond to key presses."""
     if event.key == pygame.K_q or event.key == pygame.K_ESCAPE:
-        sys.exit()
-    if event.key == pygame.K_RETURN and stats.game_active is False:
+        # ending the game by triggering a ship hit with no ships left to go to main menu
+        stats.ships_left = 0
+        ship_hit(si_settings, stats, screen, ship, aliens, bullets, alien_bullets, scoreboard)
+        pygame.mouse.set_visible(True)
+    if event.key == pygame.K_RETURN and stats.main_menu_active:
         press_play(si_settings, stats, scoreboard)
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
@@ -29,18 +32,60 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def check_events(si_settings, screen, ship, bullets, stats, play_button, scoreboard):
+def check_events(
+        si_settings, screen, ship, aliens, bullets, alien_bullets, stats, play_button, scoreboard, high_score_button,
+        main_menu_button, settings_button, credits_button
+        ):
     """"Watch for keyboard and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, si_settings, screen, ship, bullets, stats, scoreboard)
+            check_keydown_events(event, si_settings, screen, ship, aliens, bullets, alien_bullets, stats, scoreboard)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(stats, play_button, mouse_x, mouse_y, si_settings, scoreboard)
+            check_mouse_events(
+                si_settings, stats, play_button, scoreboard, high_score_button, main_menu_button, settings_button,
+                credits_button
+                )
+
+
+def check_mouse_events(
+        si_settings, stats, play_button, scoreboard, high_score_button, main_menu_button,
+        settings_button, credits_button
+        ):
+    """"check mouse events"""
+    play_clicked = check_button(play_button)
+    if play_clicked and stats.main_menu_active:
+        press_play(si_settings, stats, scoreboard)
+        pass
+    high_score_clicked = check_button(high_score_button)
+    if high_score_clicked and stats.main_menu_active:
+        stats.main_menu_active = False
+        stats.high_score_screen = True
+    main_menu_clicked = check_button(main_menu_button)
+    if main_menu_clicked and stats.main_menu_active is False and stats.game_active is False:
+        stats.main_menu_active = True
+        stats.high_score_screen = False
+        stats.settings_menu = False
+        stats.credits_screen = False
+    settings_clicked = check_button(settings_button)
+    if settings_clicked and stats.main_menu_active:
+        stats.main_menu_active = False
+        stats.settings_menu = True
+    credits_clicked = check_button(credits_button)
+    if credits_clicked and stats.main_menu_active:
+        stats.main_menu_active = False
+        stats.credits_screen = True
+
+
+def check_button(button):
+    """"check if button is pressed"""
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    button_clicked = button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked:
+        return True
 
 
 def reset_game(stats):
@@ -48,17 +93,11 @@ def reset_game(stats):
     stats.reset_stats()
 
 
-def check_play_button(stats, play_button, mouse_x, mouse_y, si_settings, scoreboard):
-    """"check if play button is pressed"""
-    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
-    if button_clicked and not stats.game_active:
-        press_play(si_settings, stats, scoreboard)
-
-
 def press_play(si_settings, stats, scoreboard):
     """"starts the game"""
     reset_game(stats)
     stats.game_active = True
+    stats.main_menu_active = False
     si_settings.initialize_dynamic_settings()
     set_mouse_visibility(si_settings)
 
@@ -74,12 +113,9 @@ def set_mouse_visibility(si_settings):
     pygame.mouse.set_visible(si_settings.mouse_visible)
 
 
-def update_screen(si_settings, screen, ship, aliens, bullets, stars, alien_bullets, play_button, stats, scoreboard):
-    """"Update images on the screen and flip to new screen"""
+def update_game_screen(screen, ship, aliens, bullets, alien_bullets, scoreboard):
+    """"Update the game screen"""
     # redraw the screen during each pass through the loop.
-    screen.fill(si_settings.bg_color)
-    for star in stars:
-        pygame.draw.circle(screen, si_settings.star_color, star, si_settings.star_width)
     for bullet in bullets.sprites():
         bullet.draw_bullet()
     for alien_bullet in alien_bullets.sprites():
@@ -90,11 +126,75 @@ def update_screen(si_settings, screen, ship, aliens, bullets, stars, alien_bulle
     # draw the scoreboard
     scoreboard.show_score()
 
-    # draw the play button if the game is inactive
-    if not stats.game_active:
-        play_button.draw_button()
 
-    # Make most recent screen visible
+def update_menu_screen(
+        screen, stats, play_button, high_scores_button, settings_button, credits_button, main_menu_button
+        ):
+    """"update the menu screen"""
+
+    # logo
+    screen_rect = screen.get_rect()
+    logo = pygame.image.load("images/logo.png")
+    rect = logo.get_rect()
+    rect.centerx = screen_rect.centerx
+    rect.bottom = screen_rect.centery
+    screen.blit(logo, rect)
+
+    if stats.main_menu_active:
+        main_menu(play_button, high_scores_button, settings_button, credits_button)
+    elif stats.high_score_screen:
+        high_score_screen(main_menu_button)
+    elif stats.settings_menu:
+        settings_menu(main_menu_button)
+    elif stats.credits_screen:
+        credits_screen(main_menu_button)
+
+
+def main_menu(play_button, high_scores_button, settings_button, credits_button):
+    """"draw main menu"""
+    play_button.draw_button()
+    high_scores_button.draw_button()
+    settings_button.draw_button()
+    credits_button.draw_button()
+
+
+def high_score_screen(main_menu_button):
+    """"draw high score screen"""
+    main_menu_button.draw_button()
+
+
+def settings_menu(main_menu_button):
+    """"draw settings menu"""
+    main_menu_button.draw_button()
+
+
+def credits_screen(main_menu_button):
+    """"draw credits screen"""
+    main_menu_button.draw_button()
+
+
+def update_display(
+        si_settings, screen, ship, aliens, bullets, stars, alien_bullets, play_button, stats, scoreboard,
+        high_scores_button, settings_button, credits_button, main_menu_button
+        ):
+    """"make most recent screen visible"""
+
+    # set background
+    screen.fill(si_settings.bg_color)
+    for star in stars:
+        pygame.draw.circle(screen, si_settings.star_color, star, si_settings.star_width)
+
+    # game screen
+    if stats.game_active:
+        update_game_screen(screen, ship, aliens, bullets, alien_bullets, scoreboard)
+
+    # menu screen
+    else:
+        update_menu_screen(
+            screen, stats, play_button, high_scores_button, settings_button, credits_button, main_menu_button
+            )
+
+    # update the screen
     pygame.display.flip()
 
 
@@ -220,6 +320,7 @@ def ship_hit(si_settings, stats, screen, ship, aliens, bullets, alien_bullets, s
 
     else:
         stats.game_active = False
+        stats.main_menu_active = True
 
         aliens.empty()
         bullets.empty()

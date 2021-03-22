@@ -22,7 +22,11 @@ def run_game():
     scoreboard = Scoreboard(si_settings, screen, stats)
 
     # make the play button
-    play_button = Button(si_settings, screen, "Play")
+    play_button = Button(si_settings, screen, "Play", 1)
+    high_scores_button = Button(si_settings, screen, "High scores", 2)
+    settings_button = Button(si_settings, screen, "Settings", 3)
+    credits_button = Button(si_settings, screen, "Credits", 4)
+    main_menu_button = Button(si_settings, screen, "Main menu", 1)
 
     # Make a ship, bullets and aliens
     ship = Ship(si_settings, screen)
@@ -43,7 +47,10 @@ def run_game():
 
     # Start mainloop for the game.
     while True:
-        gf.check_events(si_settings, screen, ship, bullets, stats, play_button, scoreboard)
+        gf.check_events(
+            si_settings, screen, ship, aliens, bullets, alien_bullets, stats, play_button, scoreboard,
+            high_scores_button, main_menu_button, settings_button, credits_button
+            )
 
         if stats.game_active:
             frame_number = gf.frame_counter(frame_number)
@@ -54,13 +61,15 @@ def run_game():
                 time_to_next_bullet = gf.fire_alien_bullet(si_settings, aliens, alien_bullets, screen)
                 frame_number = 0
             gf.update_alien_bullets(alien_bullets, si_settings, ship, stats, screen, aliens, bullets, scoreboard)
-        gf.update_screen(
-            si_settings, screen, ship, aliens, bullets, stars, alien_bullets, play_button, stats, scoreboard
-            )
+        gf.update_display(
+                si_settings, screen, ship, aliens, bullets, stars, alien_bullets, play_button, stats, scoreboard,
+                high_scores_button, settings_button, credits_button, main_menu_button
+        )
         clock.tick(si_settings.max_frames_sec)
 
 
 run_game()
 
-# TODO: make bunkers
+
 # TODO: add sound
+

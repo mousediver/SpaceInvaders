@@ -16,6 +16,7 @@ class Settings:
         self.max_frames_sec = 120
         self.scoreboard_bg = (105, 105, 105)
         self.scoreboard_height = 64
+        self.button_spacing = 60
 
         # star settings
         self.star_color = (255, 255, 255)
@@ -47,8 +48,8 @@ class Settings:
         self.alien_bullet_height = 15
         self.alien_bullet_color = (0, 255, 0)
         self.alien_bullets_allowed = 5
-        self.alien_firing_rate = 600
-        self.alien_firing_spread = 300
+        self.alien_firing_rate = 200
+        self.alien_firing_spread = 100
 
         # DYNAMIC SETTINGS
         self.speedup_scale = 1.1

@@ -10,10 +10,16 @@ class GameStats:
         self.si_settings = si_settings
         self.reset_stats()
         # start the game in inactive state
-        self.game_active = False
         self.highest_score = 0
         self.lowest_high_score = 0
         self.high_scores = []
+
+        # states
+        self.game_active = False
+        self.main_menu_active = True
+        self.high_score_screen = False
+        self.settings_menu = False
+        self.credits_screen = False
 
     def reset_stats(self):
         """"initialize stats that can change during the game"""
