@@ -7,12 +7,11 @@ class Scoreboard:
     """"a class to represent the scoreboard"""
 
     def __init__(self, si_settings, screen, stats):
-        """"initialize scorekeeping"""
+        """"initialize score keeping"""
         self.screen = screen
         self.screen_rect = screen.get_rect()
         self.si_settings = si_settings
         self.stats = stats
-
 
         # rect for scoreboard background
         self.scoreboard_height = si_settings.scoreboard_height

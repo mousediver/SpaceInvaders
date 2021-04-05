@@ -1,7 +1,5 @@
 import json
-import pygame
 from operator import itemgetter
-from text_input_box import TextInputBox
 
 
 class GameStats:
@@ -53,8 +51,10 @@ class GameStats:
         self.lowest_high_score = highscores[4][1]
         self.high_scores = highscores
 
-    def update_highscores(self, screen):
-        """"update the highscore file"""
+    def update_highscores(self, high_score_input):
+        """"update the high score file"""
+
+        high_score_input.draw_button()
 
         player_name = input("What is your name? ")
         player_score = self.score
