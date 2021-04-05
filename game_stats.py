@@ -1,5 +1,7 @@
 import json
+import pygame
 from operator import itemgetter
+from text_input_box import TextInputBox
 
 
 class GameStats:
@@ -13,6 +15,8 @@ class GameStats:
         self.highest_score = 0
         self.lowest_high_score = 0
         self.high_scores = []
+        self.best_player = ""
+        self.new_high_score = False
 
         # states
         self.game_active = False
@@ -26,6 +30,7 @@ class GameStats:
         self.ships_left = self.si_settings.ship_limit
         self.score = 0
         self.level = 1
+        self.new_high_score = False
 
     def load_highscore(self):
         """"load the highscores into the game"""
@@ -44,11 +49,13 @@ class GameStats:
                 ]
 
         self.highest_score = highscores[0][1]
+        self.best_player = highscores[0][0]
         self.lowest_high_score = highscores[4][1]
         self.high_scores = highscores
 
-    def update_highscores(self):
+    def update_highscores(self, screen):
         """"update the highscore file"""
+
         player_name = input("What is your name? ")
         player_score = self.score
         high_scores = self.high_scores

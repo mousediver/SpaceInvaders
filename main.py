@@ -43,7 +43,7 @@ def run_game():
 
     # load high scores
     stats.load_highscore()
-    scoreboard.prep_high_score()
+    scoreboard.prep_high_score(stats)
 
     # Start mainloop for the game.
     while True:

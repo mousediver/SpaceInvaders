@@ -103,7 +103,7 @@ def press_play(si_settings, stats, scoreboard):
 
     # reset scoreboard images
     scoreboard.prep_score()
-    scoreboard.prep_high_score()
+    scoreboard.prep_high_score(stats)
     scoreboard.prep_level()
     scoreboard.prep_ships()
 
@@ -161,6 +161,7 @@ def main_menu(play_button, high_scores_button, settings_button, credits_button):
 def high_score_screen(main_menu_button):
     """"draw high score screen"""
     main_menu_button.draw_button()
+
 
 
 def settings_menu(main_menu_button):
@@ -329,7 +330,7 @@ def ship_hit(si_settings, stats, screen, ship, aliens, bullets, alien_bullets, s
         create_fleet(si_settings, screen, ship, aliens)
         ship.center_ship()
 
-        check_lowest_high_score(stats)
+        check_lowest_high_score(stats, screen)
         set_mouse_visibility(si_settings)
 
 
@@ -444,13 +445,14 @@ def check_aliens_bottom(si_settings, stats, screen, ship, aliens, bullets, alien
 def check_high_score(stats, scoreboard):
     """"check if score is new high score"""
     if stats.score > stats.highest_score:
+        stats.new_high_score = True
         stats.highest_score = stats.score
-        scoreboard.prep_high_score()
+        scoreboard.prep_high_score(stats)
 
 
-def check_lowest_high_score(stats):
+def check_lowest_high_score(stats, screen):
     """"check if score is higher than lowest high score"""
     if stats.lowest_high_score == 0:
-        stats.update_highscores()
+        stats.update_highscores(screen)
     elif stats.score > stats.lowest_high_score:
-        stats.update_highscores()
+        stats.update_highscores(screen)

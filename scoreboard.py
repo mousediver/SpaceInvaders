@@ -13,6 +13,7 @@ class Scoreboard:
         self.si_settings = si_settings
         self.stats = stats
 
+
         # rect for scoreboard background
         self.scoreboard_height = si_settings.scoreboard_height
         self.scoreboard_rect = pygame.Rect(0, 0, si_settings.screen_width, self.scoreboard_height)
@@ -24,7 +25,7 @@ class Scoreboard:
 
         # prepare initial score image
         self.prep_score()
-        self.prep_high_score()
+        self.prep_high_score(stats)
         self.prep_level()
         self.prep_ships()
 
@@ -36,17 +37,22 @@ class Scoreboard:
 
         # Display score at top of the screen
         self.score_rect = self.score_image.get_rect()
-        self.score_rect.right = self.screen_rect.right -20
+        self.score_rect.right = self.screen_rect.right - 20
         self.score_rect.top = 10
 
-    def prep_high_score(self):
+    def prep_high_score(self, stats):
         """"turn score into image"""
         rounded_score = int(round(self.stats.highest_score, -1))
-        score_str = "{:,}".format(rounded_score)
+        if stats.new_high_score:
+            score_str = 'new high score!'
+        elif stats.best_player == '#####':
+            score_str = ""
+        else:
+            score_str = "{:,}".format(rounded_score) + ' by ' + stats.best_player
         self.high_score_image = self.font.render(score_str, True, self.text_color, self.scoreboard_bg)
 
         # Display score at top of the screen
-        self.high_score_rect = self.score_image.get_rect()
+        self.high_score_rect = self.high_score_image.get_rect()
         self.high_score_rect.centerx = self.screen_rect.centerx
         self.high_score_rect.top = 10
 
